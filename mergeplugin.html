@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html;text/jpg;text/png;" />
+  <title>Write On Any Photo & Download It Plugin</title>
+  <link rel="stylesheet" href="jquery-ui.min.css">
+  <script src="jquery.js"></script>
+  <script src="jquery-ui.min.js"></script>
+  <style>
+	#main{
+		position:absolute;
+		width:1024px;
+	}
+	
+	#uploadedphoto_droppable{
+		position:relative;
+		top:-50px;
+		width:500px;
+		height:500px;
+		float:left;
+		border:10px solid lightgray;
+	}
+	
+	.addtext{
+		position:relative;
+		margin-left:50px;
+		top:-50px;
+		height:150px;
+		width:400px;
+		background-color:lightgray;
+		float:left;
+	}
+	
+	.addtext #inputtext{
+		margin:15px;
+		line-height:40px;
+		width:350px;
+		font-size:15pt;
+		padding-left:10px;
+	}
+	
+	.addtext #makeimage{
+		margin:15px;
+	}
+	
+	.addtext #makenewimage{
+		margin:15px;
+		display:none;
+	}
+	
+	#genimage_draggable{
+		position:relative;
+		float:left;
+		margin-left:50px;
+		width:350px;
+		line-height:40px;
+	}
+	
+	#genoutput_downloadable{
+		position:relative;
+		height:600px;
+		width:600px;
+		float:left;
+	}
+  </style>
+  <script src="html2canvas.js" ></script>
+  <script src="canvas2image.js" ></script>
+</head>
+<body>
+	<div id="main">
+	
+	<h1 style="font-size:150%;">Write On Any Photo & Download It Plugin</h1>
+	<br /><br />
+	
+	<div id="uploadedphoto_droppable">
+		<img src="cake1.jpeg" width="500px" height="500px" /> 
+		<br /><br />
+		<!--<input type="button" value="Download" id="downloadphoto" name="download" />-->
+		<a href="#" id="downloadphoto" >Download</a>
+	</div>
+	
+	<div class="addtext">
+		<input type="text" id="inputtext" name="inputtext" placeholder="&ensp;Enter Input Here" />
+		<br /><br />
+		<input type="button" id="makeimage" name="makeimage" value="Make Image" onclick="" />
+		<input type="button" id="makenewimage" name="makenewimage" style="display:none" value="Make New Image" onclick="" />
+	</div>
+	
+	<div id="genimage_draggable">
+		
+	</div>
+	
+	<div id="genoutput_downloadable">
+	</div>
+	
+	</div>
+	
+	<script type="text/javascript">
+	$(function() { 
+	
+    $("#makeimage").click(function() {
+		$("#inputtext").css({"background-color":"transparent","border":"none"});
+        html2canvas($("#inputtext"), {
+            onrendered: function(canvas) {
+                theCanvas = canvas;
+                document.body.appendChild(canvas);
+				$("#genimage_draggable").css({"background-color":"transparent","border":"none"});
+				//Canvas2Image.saveAsPNG(canvas);
+				//alert(Canvas2Image.saveAsPNG(canvas));
+                $("#genimage_draggable").append(canvas);
+                // Clean up 
+                //document.body.removeChild(canvas);
+				}
+			});
+			$("#makeimage").css("display","none");
+			$("#makenewimage").css("display","block");
+		});
+	});
+	
+	$(function() { 
+	
+    $("#makenewimage").click(function() {
+		$("#inputtext").css({"background-color":"white"});
+		$("#makeimage").css("display","block");
+		$("#makenewimage").css("display","none");
+		});
+	});
+	
+	$(function() {
+		$( "#uploadedphoto_droppable" ).droppable({
+			drop: function( event, ui ) {
+				var Startpos = $("#genimage_draggable").position();
+				$("#genimage_draggable").css({"position":"absolute","left":(Startpos.left-10),"top":(Startpos.top-60),"margin-left":"none","padding":"none"}).appendTo(this);
+			}
+		});
+	
+	$("#genimage_draggable").draggable({
+
+    /* Find original position of dragged image.
+    start: function(event, ui) {
+
+    	// Show start dragged position of image.
+    	Startpos = $(this).position();
+		alert(Startpos.left);
+		alert(Startpos.top);
+    	//$("div#start").text("START: \nLeft: "+ Startpos.left + "\nTop: " + Startpos.top);
+    },*/
+
+    // Find position where image is dropped.
+    stop: function(event, ui) {
+
+    	//Stoppos = $("genimage_draggable").position();
+		//$("genimage_draggable").css({"position":"absolute","left":Stoppos.left,"top":Stoppos.top,"margin-left":"0px","padding":"0px;"}).appendTo($("#uploadedphoto_droppable"));
+    }
+	});
+  });
+  $(function() { 
+	
+    $("#downloadphoto").click(function() {
+        html2canvas($("#uploadedphoto_droppable"), {
+            onrendered: function(canvas) {
+                theCanvas = canvas;
+                document.body.appendChild(canvas);
+				$("#downloadphoto").attr("href",Canvas2Image.saveAsPNG(canvas));
+				//Canvas2Image.saveAsPNG(canvas);
+				$("#addtext").css("display","none");
+                $("#genoutput_downloadable").append(canvas);
+            }
+        });
+    });
+});
+	</script>
+	
+</body>
+</html>
